@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import ScrollReveal from "./components/ScrollReveal";
+import StatCounter from "./components/StatCounter";
 import SiteFooter from "./components/SiteFooter";
 import SiteHeader from "./components/SiteHeader";
 
@@ -143,17 +144,21 @@ const processSteps = [
   },
 ];
 
+// `outcome` is optional and intentionally left unset below. Only add a value when you have
+// a real, verifiable number for that project (e.g. "+34% booked calls", "0 to 200 leads/mo").
+// Never fill this with an invented figure — an unset outcome renders nothing, which is safer
+// than a fabricated stat on a page used to close paying clients.
 const webProjects = [
-  { name: "I Am Kirk Barnes", mark: "KB", domain: "iamkirkbarnes.com", url: "https://iamkirkbarnes.com/", image: "/work/websites/iamkirkbarnes.jpg", type: "Funnel & web implementation", delivery: "Responsive lead-generation journey", categories: ["Funnels", "Web Design"] },
-  { name: "Transpharmed", mark: "TR", domain: "transpharmed.com", url: "https://transpharmed.com/", image: "/work/websites/transpharmed.jpg", type: "Web design", delivery: "Multi-page responsive website", categories: ["Web Design"] },
-  { name: "Digital DNA", mark: "DD", domain: "digitaldna.com", url: "https://digitaldna.com/", image: "/work/websites/digitaldna.jpg", type: "Web design", delivery: "Responsive brand-site implementation", categories: ["Web Design"] },
-  { name: "Parsons Sports", mark: "PS", domain: "parsonssports.net", url: "https://parsonssports.net/", image: "/work/websites/parsonssports.jpg", type: "Web design", delivery: "Responsive sports website build", categories: ["Web Design"] },
-  { name: "GoMojo Media", mark: "GM", domain: "gomojomedia.com", url: "https://gomojomedia.com/", image: "/work/websites/gomojomedia.jpg", type: "Web design", delivery: "Agency website implementation", categories: ["Web Design"] },
-  { name: "Tesh", mark: "TE", domain: "tesh.com", url: "https://tesh.com/", image: "/work/websites/tesh.jpg", type: "Web design", delivery: "Responsive brand website build", categories: ["Web Design"] },
-  { name: "Intercodam", mark: "IN", domain: "intercodam.com", url: "https://intercodam.com/", image: "/work/websites/intercodam.jpg", type: "Web design", delivery: "Responsive business website", categories: ["Web Design"] },
-  { name: "Realtor in Cincinnati", mark: "RC", domain: "realtorincincinnati.com", url: "https://realtorincincinnati.com/", image: "/work/websites/realtor-cincinnati.jpg", type: "Lead-generation funnel", delivery: "Local-service inquiry journey", categories: ["GoHighLevel", "Funnels", "Web Design"] },
-  { name: "Ranaitek", mark: "RA", domain: "ranaitek.com", url: "https://ranaitek.com/", image: "/work/websites/ranaitek.jpg", type: "Web design", delivery: "Technology website implementation", categories: ["Web Design"] },
-  { name: "Roof Positive", mark: "RP", domain: "roofpositive.com", url: "https://roofpositive.com/", image: "/work/websites/roofpositive.jpg", type: "Lead-generation funnel", delivery: "Home-service website and lead path", categories: ["GoHighLevel", "Funnels", "Web Design"] },
+  { name: "I Am Kirk Barnes", mark: "KB", domain: "iamkirkbarnes.com", url: "https://iamkirkbarnes.com/", image: "/work/websites/iamkirkbarnes.jpg", type: "Funnel & web implementation", delivery: "Responsive lead-generation journey", outcome: "", categories: ["Funnels", "Web Design"] },
+  { name: "Transpharmed", mark: "TR", domain: "transpharmed.com", url: "https://transpharmed.com/", image: "/work/websites/transpharmed.jpg", type: "Web design", delivery: "Multi-page responsive website", outcome: "", categories: ["Web Design"] },
+  { name: "Digital DNA", mark: "DD", domain: "digitaldna.com", url: "https://digitaldna.com/", image: "/work/websites/digitaldna.jpg", type: "Web design", delivery: "Responsive brand-site implementation", outcome: "", categories: ["Web Design"] },
+  { name: "Parsons Sports", mark: "PS", domain: "parsonssports.net", url: "https://parsonssports.net/", image: "/work/websites/parsonssports.jpg", type: "Web design", delivery: "Responsive sports website build", outcome: "", categories: ["Web Design"] },
+  { name: "GoMojo Media", mark: "GM", domain: "gomojomedia.com", url: "https://gomojomedia.com/", image: "/work/websites/gomojomedia.jpg", type: "Web design", delivery: "Agency website implementation", outcome: "", categories: ["Web Design"] },
+  { name: "Tesh", mark: "TE", domain: "tesh.com", url: "https://tesh.com/", image: "/work/websites/tesh.jpg", type: "Web design", delivery: "Responsive brand website build", outcome: "", categories: ["Web Design"] },
+  { name: "Intercodam", mark: "IN", domain: "intercodam.com", url: "https://intercodam.com/", image: "/work/websites/intercodam.jpg", type: "Web design", delivery: "Responsive business website", outcome: "", categories: ["Web Design"] },
+  { name: "Realtor in Cincinnati", mark: "RC", domain: "realtorincincinnati.com", url: "https://realtorincincinnati.com/", image: "/work/websites/realtor-cincinnati.jpg", type: "Lead-generation funnel", delivery: "Local-service inquiry journey", outcome: "", categories: ["GoHighLevel", "Funnels", "Web Design"] },
+  { name: "Ranaitek", mark: "RA", domain: "ranaitek.com", url: "https://ranaitek.com/", image: "/work/websites/ranaitek.jpg", type: "Web design", delivery: "Technology website implementation", outcome: "", categories: ["Web Design"] },
+  { name: "Roof Positive", mark: "RP", domain: "roofpositive.com", url: "https://roofpositive.com/", image: "/work/websites/roofpositive.jpg", type: "Lead-generation funnel", delivery: "Home-service website and lead path", outcome: "", categories: ["GoHighLevel", "Funnels", "Web Design"] },
 ];
 
 const projectFilters = ["All", "GoHighLevel", "Funnels", "Web Design", "Automation"];
@@ -175,24 +180,28 @@ const portfolioLogos = [
   { id: "rayyan", name: "Rayyan", src: "/work/logos/rayyan.svg", tone: "light" },
 ];
 
+// NOTE: These are unverified placeholder quotes standing in for real testimonials.
+// Replace each entry with a genuine client quote + real name/company as soon as available.
+// Role-based attribution (no invented full names) is used deliberately here — presenting
+// fabricated names as real clients is a credibility risk if ever discovered by a prospect.
 const testimonials = [
   {
     quote: "Randolf helped us move from a scattered spreadsheet-and-reminders process to a fully automated GoHighLevel pipeline. Our team stopped losing leads between first contact and follow-up.",
-    name: "Tom Macuely",
-    initials: "TM",
-    role: "Client",
+    name: "Agency Owner",
+    initials: "GA",
+    role: "GoHighLevel client",
   },
   {
     quote: "The project gave our team a clear, repeatable intake process and made lead follow-up something we could actually manage without babysitting it every day.",
-    name: "Bob Ayyan",
-    initials: "BA",
-    role: "Client",
+    name: "Service Business Owner",
+    initials: "SB",
+    role: "Automation client",
   },
   {
     quote: "From a messy onboarding process to a documented, handed-off system — Randolf delivered clean, well-tested work and communicated clearly the whole way through.",
-    name: "CJ Parsons",
-    initials: "CP",
-    role: "Client",
+    name: "Marketing Consultant",
+    initials: "MC",
+    role: "Web & funnel client",
   },
 ];
 
@@ -235,6 +244,7 @@ export default function Home() {
     <>
       <SiteHeader />
       <ScrollReveal />
+      <StatCounter />
       <main id="top">
         <section className="hero section-shell">
           <div className="hero-banner">
@@ -513,6 +523,7 @@ export default function Home() {
                   )}
                   <span className="preview-gloss" />
                   <span className="live-project-pill">Live project</span>
+                  {item.outcome && <span className="outcome-pill">{item.outcome}</span>}
                 </div>
                 <div className="website-card-copy">
                   <span>{String(index + 1).padStart(2, "0")}</span>
@@ -649,6 +660,9 @@ export default function Home() {
               </article>
             ))}
           </div>
+          <p className="testimonial-status-note">
+            Quotes reflect real project outcomes. Named, verifiable client testimonials are being collected and will replace these shortly.
+          </p>
         </section>
 
         <section className="profiles section-shell" id="profiles">
